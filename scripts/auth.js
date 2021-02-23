@@ -2,11 +2,11 @@
 auth.onAuthStateChanged(user => {
   if(user)
   {
-    console.log("current logged in user",user);
+    //console.log("current logged in user",user);
     //accessing the database
     db.collection('guides').onSnapshot(snapshot =>{
       setupUI(user);
-  setupGuides(snapshot.docs);
+      setupGuides(snapshot.docs);
 },err => console.log(err.message));
   }
   else{
