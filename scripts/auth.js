@@ -4,10 +4,10 @@ auth.onAuthStateChanged(user => {
   {
     console.log("current logged in user",user);
     //accessing the database
-    db.collection('guides').get().then(snapshot =>{
+    db.collection('guides').onSnapshot(snapshot =>{
       setupUI(user);
   setupGuides(snapshot.docs);
-});
+},err => console.log(err.message));
   }
   else{
     console.log('user logged out');
@@ -15,7 +15,21 @@ auth.onAuthStateChanged(user => {
     setupGuides([]);
   }
 })
-
+//creating a new guide
+const createForm = document.querySelector('#create-form');
+createForm.addEventListener('submit',(e) =>{
+e.preventDefault();
+db.collection('guides').add({
+  title:createForm.title.value,
+  content: createForm.content.value
+}).then(() =>{
+  const modal = document.querySelector('#modal-create');
+    M.Modal.getInstance(modal).close();
+    createForm.reset();
+}).catch(err =>{
+  console.log(err.message);
+});
+});
 
 // signup
 const signupForm = document.querySelector('#signup-form');
