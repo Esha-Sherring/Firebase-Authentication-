@@ -3,9 +3,14 @@ auth.onAuthStateChanged(user => {
   if(user)
   {
     console.log("current logged in user",user);
+    //accessing the database
+    db.collection('guides').get().then(snapshot =>{
+  setupGuides(snapshot.docs);
+});
   }
   else{
     console.log('user logged out');
+    setupGuides([]);
   }
 })
 
