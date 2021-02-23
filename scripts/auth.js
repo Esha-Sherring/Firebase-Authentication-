@@ -2,11 +2,10 @@
 auth.onAuthStateChanged(user => {
   if(user)
   {
-    console.log("current logged in user",user);
-    //accessing the database
+    
     db.collection('guides').onSnapshot(snapshot =>{
       setupUI(user);
-  setupGuides(snapshot.docs);
+      setupGuides(snapshot.docs);
 },err => console.log(err.message));
   }
   else{
@@ -40,18 +39,20 @@ signupForm.addEventListener('submit', (e) => {
   const email = signupForm['signup-email'].value;
   const password = signupForm['signup-password'].value;
 
-  // sign up the user
+  // sign up the user and add to firebase
   auth.createUserWithEmailAndPassword(email, password).then(cred => {
+    return db.collection('users').doc(cred.user.uid).set({
+      bio: signupForm['signup-bio'].value
+    });
+  }).then(()=>{
+   // close the signup modal & reset form
+   const modal = document.querySelector('#modal-signup');
+   M.Modal.getInstance(modal).close();
+   signupForm.reset();
+  })
     
-    // close the signup modal & reset form
-    const modal = document.querySelector('#modal-signup');
-    M.Modal.getInstance(modal).close();
-    signupForm.reset();
   });
 
-  
-
-});
 
 //Logout
 const logout=document.querySelector('#logout');
